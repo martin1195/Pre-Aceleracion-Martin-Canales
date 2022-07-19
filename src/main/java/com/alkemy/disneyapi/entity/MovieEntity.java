@@ -3,16 +3,21 @@ package com.alkemy.disneyapi.entity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "movies")
 @Getter
 @Setter
+@SQLDelete(sql = "UPDATE movies SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class MovieEntity
 {
     @Id
@@ -25,7 +30,7 @@ public class MovieEntity
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     private LocalDate creationDate;
     private Short rating;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "genre_id")
     private GenreEntity genre;
     @ManyToMany(
@@ -38,5 +43,8 @@ public class MovieEntity
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "character_id")
     )
-    private Set<CharacterEntity> characters;
+    private Set<CharacterEntity> characters = new HashSet<>();
+    private Boolean deleted = Boolean.FALSE;
+    public  void  addCharacter(CharacterEntity character){this.characters.add(character);}
+    public void removeCharacter(CharacterEntity character){this.characters.remove(character);}
 }
