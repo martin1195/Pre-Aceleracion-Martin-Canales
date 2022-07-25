@@ -10,6 +10,7 @@ import com.alkemy.disneyapi.entity.MovieEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,16 +22,15 @@ public class MovieMapper {
     private GenreMapper genreMapper;
     @Autowired
     private CharacterMapper characterMapper;
-    public MovieEntity movieDTO2Entity(MovieDTO dto){
+    public MovieEntity movieDTO2Entity(MovieDTO dto, boolean loadCharacters){
         MovieEntity entity = new MovieEntity();
-        entity.setImage(dto.getImage());
-        entity.setCreationDate(dto.getCreationDate());
+        convertValues(dto,entity);
         GenreEntity genre = genreMapper.genreDTO2Entity(dto.getGenre());
         entity.setGenre(genre);
-        entity.setRating(dto.getRating());
-        entity.setTitle(dto.getTitle());
-        Set<CharacterEntity> characters = characterMapper.characterDTOSet2EntitySet(dto.getCharacters());
-        entity.setCharacters(characters);
+        if (loadCharacters){
+            Set<CharacterEntity> characters = characterMapper.characterDTOSet2EntitySet(dto.getCharacters(),false);
+            entity.setCharacters(characters);
+        }
         return entity;
     }
 
@@ -57,17 +57,18 @@ public class MovieMapper {
         return dtoSet;
     }
 
-    public Set<MovieEntity> movieDTOSet2EntitySet(Set<MovieDTO> dtoSet){
+    public Set<MovieEntity> movieDTOSet2EntitySet(Set<MovieDTO> dtoSet,boolean loadCharacters){
         Set<MovieEntity> entities = new HashSet<>();
         for (MovieDTO dto : dtoSet){
-            entities.add(this.movieDTO2Entity(dto));
+            entities.add(this.movieDTO2Entity(dto,loadCharacters));
         }
         return entities;
     }
-    public Set<MovieBasicDTO> movieEntityList2DTOBasicSet(List<MovieEntity> entities){
-        Set<MovieBasicDTO> basicDTOS = new HashSet<>();
-        MovieBasicDTO basicDTO= new MovieBasicDTO();
+    public List<MovieBasicDTO> movieEntityList2DTOBasicList(List<MovieEntity> entities){
+        List<MovieBasicDTO> basicDTOS = new ArrayList<>();
+
         for (MovieEntity entity : entities){
+            MovieBasicDTO basicDTO= new MovieBasicDTO();
             basicDTO.setId(entity.getId());
             basicDTO.setImage(entity.getImage());
             basicDTO.setCreationDate(entity.getCreationDate());
@@ -75,5 +76,15 @@ public class MovieMapper {
             basicDTOS.add(basicDTO);
         }
         return basicDTOS;
+    }
+    public void convertValues(MovieDTO movieDTO,MovieEntity movieEntity){
+        movieEntity.setImage(movieDTO.getImage());
+        movieEntity.setCreationDate(movieDTO.getCreationDate());
+        movieEntity.setRating(movieDTO.getRating());
+        movieEntity.setTitle(movieDTO.getTitle());
+    }
+    public MovieEntity replaceAttributes(MovieEntity movie, MovieDTO movieDTO){
+        convertValues(movieDTO,movie);
+        return movie;
     }
 }

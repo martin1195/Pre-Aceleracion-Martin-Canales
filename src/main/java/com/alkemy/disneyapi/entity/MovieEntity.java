@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -47,4 +48,20 @@ public class MovieEntity
     private Boolean deleted = Boolean.FALSE;
     public  void  addCharacter(CharacterEntity character){this.characters.add(character);}
     public void removeCharacter(CharacterEntity character){this.characters.remove(character);}
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        MovieEntity entity = (MovieEntity) o;
+        if (this.getId() != null){
+            return this.getId().equals(entity.getId());
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id,image,title);
+    }
 }

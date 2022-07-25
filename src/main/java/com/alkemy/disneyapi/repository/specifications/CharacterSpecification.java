@@ -13,7 +13,6 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 @Component
 public class CharacterSpecification {
@@ -21,6 +20,11 @@ public class CharacterSpecification {
         return ((root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
+            if (filtersDTO.getAge() != null){
+                predicates.add(
+                        criteriaBuilder.equal(root.get("age"),filtersDTO.getAge())
+                );
+            }
 
             if (StringUtils.hasLength(filtersDTO.getName())){
                 predicates.add(
@@ -30,14 +34,7 @@ public class CharacterSpecification {
                         )
                 );
             }
-            if (filtersDTO.getAge() > 0){
-                predicates.add(
-                        criteriaBuilder.like(
-                                criteriaBuilder.lower(root.get("genre_id")),
-                                "%" + filtersDTO.getAge() + "%"
-                        )
-                );
-            }
+
             if (!CollectionUtils.isEmpty(filtersDTO.getMovies())){
                 Join<MovieEntity, CharacterEntity> join = root.join("movies", JoinType.INNER);
                 Expression<String> movie_id = join.get("id");

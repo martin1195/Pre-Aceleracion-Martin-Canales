@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -29,4 +30,21 @@ public class CharacterEntity {
     @ManyToMany(mappedBy = "characters" , cascade = CascadeType.ALL)
     private Set<MovieEntity> movies = new HashSet<>();
     private Boolean deleted = Boolean.FALSE;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CharacterEntity entity = (CharacterEntity) o;
+        if (this.getId() != null) {
+            return this.getId().equals(entity.getId());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id,image,name);
+    }
 }

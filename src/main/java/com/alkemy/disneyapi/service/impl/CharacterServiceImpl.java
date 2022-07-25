@@ -23,9 +23,9 @@ public class CharacterServiceImpl implements CharacterService {
     @Autowired
     CharacterSpecification characterSpecification;
     public CharacterDTO save(CharacterDTO dto){
-        CharacterEntity entity = characterMapper.characterDTO2Entity(dto);
+        CharacterEntity entity = characterMapper.characterDTO2Entity(dto,false);
         CharacterEntity saved = characterRepository.save(entity);
-        CharacterDTO result = characterMapper.characterEntity2DTO(saved,true);
+        CharacterDTO result = characterMapper.characterEntity2DTO(saved,false);
         return result;
     }
     public CharacterEntity getCharacterById(Long id){
@@ -44,11 +44,9 @@ public class CharacterServiceImpl implements CharacterService {
         return characterBasicDTOS;
     }
 
-    public Set<CharacterBasicDTO> getAll(){
-        Set<CharacterBasicDTO> charactersBasicDTO;
-        List<CharacterEntity> entities = characterRepository.findAll();
-        charactersBasicDTO = characterMapper.characterEntityList2BasicDTOSet(entities);
-        return  charactersBasicDTO;
+    public CharacterDTO update(Long id, CharacterDTO characterDTO) {
+        CharacterEntity characterModified = characterMapper.replaceAttributes(characterRepository.getReferenceById(id),characterDTO);
+        return characterMapper.characterEntity2DTO(characterRepository.save(characterModified),true);
     }
 
     public CharacterDTO getOne(Long id){

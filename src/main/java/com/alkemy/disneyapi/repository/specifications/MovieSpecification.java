@@ -25,16 +25,13 @@ public class MovieSpecification {
                         )
                 );
             }
-            if (filtersDTO.getIdGenre() > 0){
+            if (filtersDTO.getIdGenre() != null){
                 predicates.add(
-                        criteriaBuilder.like(
-                                criteriaBuilder.lower(root.get("genre_id")),
-                                "%" + filtersDTO.getIdGenre() + "%"
-                        )
+                        criteriaBuilder.equal(root.get("genre"), filtersDTO.getIdGenre())
                 );
             }
             query.distinct(true);
-            String orderByField = "creation_date";
+            String orderByField = "creationDate";
             query.orderBy(
                     filtersDTO.isDESC() ?
                             criteriaBuilder.asc(root.get(orderByField)) :

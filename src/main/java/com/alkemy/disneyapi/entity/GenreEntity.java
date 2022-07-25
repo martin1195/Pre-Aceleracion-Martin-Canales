@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -25,4 +26,21 @@ public class GenreEntity {
     @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
     private Set<MovieEntity> movies = new HashSet<>();
     private Boolean deleted = Boolean.FALSE;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GenreEntity that = (GenreEntity) o;
+        if (this.getId()!=null && this.getName()!=null){
+            return this.getId().equals(that.getId())&&this.getName().equals(that.getName());
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, image);
+    }
 }

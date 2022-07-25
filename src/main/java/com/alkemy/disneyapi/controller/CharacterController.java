@@ -23,11 +23,6 @@ public class CharacterController {
         CharacterDTO characterSaved = characterService.save(character);
         return ResponseEntity.status(HttpStatus.CREATED).body(characterSaved);
     }
-    @GetMapping
-    public ResponseEntity<Set<CharacterBasicDTO>> getAll(){
-        Set<CharacterBasicDTO> characters = characterService.getAll();
-        return  ResponseEntity.ok().body(characters);
-    }
     @GetMapping("/{id}")
     public ResponseEntity<CharacterDTO> getOne(@PathVariable Long id){
         CharacterDTO characterDTO = characterService.getOne(id);
@@ -46,5 +41,9 @@ public class CharacterController {
     public ResponseEntity<Void> delete(@PathVariable Long id){
         characterService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<CharacterDTO> update(@PathVariable Long id,@RequestBody CharacterDTO characterDTO){
+        return ResponseEntity.ok().body(characterService.update(id,characterDTO));
     }
 }

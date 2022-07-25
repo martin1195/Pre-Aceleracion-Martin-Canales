@@ -4,6 +4,7 @@ import com.alkemy.disneyapi.entity.CharacterEntity;
 import com.alkemy.disneyapi.entity.GenreEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.util.HashSet;

@@ -17,15 +17,13 @@ public class CharacterMapper {
 
     @Autowired
     private MovieMapper movieMapper;
-    public CharacterEntity characterDTO2Entity(CharacterDTO dto){
+    public CharacterEntity characterDTO2Entity(CharacterDTO dto,boolean loadMovies){
         CharacterEntity entity = new CharacterEntity();
-        entity.setName(dto.getName());
-        entity.setImage(dto.getImage());
-        entity.setAge(dto.getAge());
-        entity.setHistory(dto.getHistory());
-        entity.setWeight(dto.getWeight());
-        Set<MovieEntity> movies = movieMapper.movieDTOSet2EntitySet(dto.getMovies());
-        entity.setMovies(movies);
+        convertValues(dto,entity);
+        if (loadMovies){
+            Set<MovieEntity> movies = movieMapper.movieDTOSet2EntitySet(dto.getMovies(),false);
+            entity.setMovies(movies);
+        }
         return entity;
     }
 
@@ -63,11 +61,22 @@ public class CharacterMapper {
         }
         return dtoSet;
     }
-    public Set<CharacterEntity> characterDTOSet2EntitySet(Set<CharacterDTO> dtoSet){
+    public Set<CharacterEntity> characterDTOSet2EntitySet(Set<CharacterDTO> dtoSet,boolean loadMovies){
         Set<CharacterEntity> entities = new HashSet<>();
         for (CharacterDTO dto : dtoSet){
-            entities.add(this.characterDTO2Entity(dto));
+            entities.add(this.characterDTO2Entity(dto,loadMovies));
         }
         return entities;
+    }
+    public void convertValues(CharacterDTO characterDTO,CharacterEntity characterEntity){
+        characterEntity.setName(characterDTO.getName());
+        characterEntity.setImage(characterDTO.getImage());
+        characterEntity.setAge(characterDTO.getAge());
+        characterEntity.setHistory(characterDTO.getHistory());
+        characterEntity.setWeight(characterDTO.getWeight());
+    }
+    public CharacterEntity replaceAttributes(CharacterEntity characterEntity,CharacterDTO characterDTO){
+        convertValues(characterDTO,characterEntity);
+        return characterEntity;
     }
 }
