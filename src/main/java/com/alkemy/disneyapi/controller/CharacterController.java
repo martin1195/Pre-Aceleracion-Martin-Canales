@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class CharacterController {
     @Autowired
     private CharacterService characterService;
     @PostMapping
-    public ResponseEntity<CharacterDTO> save(@RequestBody CharacterDTO character){
+    public ResponseEntity<CharacterDTO> save(@Valid @RequestBody CharacterDTO character){
         CharacterDTO characterSaved = characterService.save(character);
         return ResponseEntity.status(HttpStatus.CREATED).body(characterSaved);
     }

@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 @Service
 public class EmailServiceImpl implements EmailService {
-    @Autowired
-    private Environment env;
-    @Value("${alkemy.disneyapi.email.sender}$")
+    @Value("${alkemy.disneyapi.email.sender}")
     private String emailSender;
 
 
@@ -39,9 +37,6 @@ public class EmailServiceImpl implements EmailService {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sendGrid.api(request);
-            System.out.println(response.getStatusCode());
-            System.out.println(response.getBody());
-            System.out.println(response.getHeaders());
         } catch (IOException e) {
             throw new RuntimeException("Error trying to send the email");
         }
